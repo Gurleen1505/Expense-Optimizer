@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Details</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap">
+    <style>
+        /* Add your CSS here */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #e9ecef;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 40px;
+            padding: 20px;
+        }
+        .headline {
+            text-align: center;
+            margin-top: 20px;
+            color: #2c3e50;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+        .form-container > div {
+            width: 100%;
+        }
+        .form-container h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .form-container label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .form-container input, .form-container select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        .form-container input[type="submit"] {
+            background-color: #c94c4c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 12px 20px;
+            font-size: 1.2em;
+        }
+        .form-container input[type="submit"]:hover {
+            background-color: #a83939;
+        }
+        .table-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .table-container h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #loan-summary {
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="headline">
+            <h1>Loan Details</h1>
+        </div>
+
+        <div class="form-container">
+            <div>
+                <h2>Enter Your Loan Details</h2>
+                <form id="loanForm">
+                    <label for="loanType">Loan Type:</label>
+                    <select id="loanType" name="loanType" onchange="toggleVehicleOptions()">
+                        <option value="Vehicle Loan">Vehicle Loan</option>
+                        <option value="Home Loan">Home Loan</option>
+                        <option value="Education Loan">Student Loan</option>
+                        <option value="Personal Loan">Personal Loan</option>
+                    </select>
+                    <div id="vehicleOptions" style="display: none;">
+                        <label for="vehicleType">Vehicle Type:</label>
+                        <select id="vehicleType" name="vehicleType" onchange="toggleOtherVehicleOption()">
+                            <option value="Car">Car</option>
+                            <option value="Bike">Bike</option>
+                            <option value="Scooter">Scooter</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div id="otherVehicleTypeDiv" style="display: none;">
+                            <label for="otherVehicleType">Specify Vehicle Type:</label>
+                            <input type="text" id="otherVehicleType" name="otherVehicleType">
+                        </div>
+                    </div>
+
+                    <label for="bank">Bank</label>
+                    <select id="bank" onchange="toggleOtherBankOption()">
+                        <option value="SBI">SBI</option>
+                        <option value="HDFC">HDFC</option>
+                        <option value="ICICI">ICICI</option>
+                        <option value="Axis Bank">Axis Bank</option>
+                        <option value="BOI">BOI</option>
+                        <option value="PNB">PNB</option>
+                        <option value="IndusInd Bank">IndusInd Bank</option>
+                        <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
+                        <option value="IDFC First Bank">IDFC First Bank</option>
+                        <option value="Bandhan Bank">Bandhan Bank</option>
+                        <option value="Yes Bank">Yes Bank</option>
+                        <option value="Union Bank">Union Bank</option>
+                        <option value="South Indian Bank">South Indian Bank</option>
+                        <option value="Other">Other</option>
+                    </select>
+
+                    <div id="otherBankDiv" style="display: none;">
+                        <label for="otherBank">Enter Bank Name:</label>
+                        <input type="text" id="otherBank" name="otherBank">
+                    </div>
+
+                    <label for="debitDate">Debit Date:</label>
+                    <input type="date" id="debitDate" name="debitDate">
+
+                    <label for="loanPercentage">Loan Percentage (%):</label>
+                    <input type="number" id="loanPercentage" name="loanPercentage" step="0.01">
+
+                    <label for="totalAmount">Total Loan Amount:</label>
+                    <input type="text" id="totalAmount" name="totalAmount" oninput="formatAmount(this)">
+
+                    <label for="loanDurationMonths">Loan Duration (Months):</label>
+                    <input type="number" id="loanDurationMonths" name="loanDurationMonths">
+
+                    <label for="loanDurationYears">Loan Duration (Years):</label>
+                    <input type="number" id="loanDurationYears" name="loanDurationYears">
+
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <h2>Loan Details</h2>
+            <table id="loanDetailsTable">
+                <thead>
+                    <tr>
+                        <th>Loan Type</th>
+                        <th>Bank</th>
+                        <th>Debit Date</th>
+                        <th>Loan Percentage</th>
+                        <th>Loan Duration (Months)</th>
+                        <th>Loan Duration (Years)</th>
+                        <th>Total Loan Amount</th>
+                        <th>Total Interest</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div id="loan-summary">
+                <p>Total Loan Amount: <span id="totalLoanAmount">₹0</span></p>
+                <p>Total Interest: <span id="totalInterest">₹0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleVehicleOptions() {
+            const loanType = document.getElementById('loanType').value;
+            document.getElementById('vehicleOptions').style.display = loanType === 'Vehicle Loan' ? 'block' : 'none';
+        }
+
+        function toggleOtherVehicleOption() {
+            const vehicleType = document.getElementById('vehicleType').value;
+            document.getElementById('otherVehicleTypeDiv').style.display = vehicleType === 'Other' ? 'block' : 'none';
+        }
+
+        function toggleOtherBankOption() {
+            const bank = document.getElementById('bank').value;
+            document.getElementById('otherBankDiv').style.display = bank === 'Other' ? 'block' : 'none';
+        }
+
+        function formatAmount(input) {
+            let value = input.value.replace(/,/g, '');
+            if (!isNaN(value) && value !== "") {
+                input.value = Number(value).toLocaleString('en-IN');
+            }
+        }
+
+        document.getElementById('loanForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            // Add code to process and display form data here
+        });
+    </script>
+</body>
+</html>
+

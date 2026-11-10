@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Optimizer</title>
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@700&display=swap">
+    <style>
+       html{
+        scroll-behavior: smooth;
+       }
+       .content{
+        height: 1000px;
+       }
+       
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+        }
+
+        .topnav {
+            overflow: hidden;
+            background-color: #c94c4c;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .topnav a, .topnav .dropbtn {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            border: none;
+            background: none;
+        }
+
+        .topnav a:hover, .topnav .dropbtn:hover {
+            background-color: #34495e;
+            color: white;
+        }
+
+        .topnav .dropdown {
+            float: left;
+            overflow: hidden;
+        }
+
+        .topnav .dropdown .dropbtn {
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .topnav .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #ecf0f1;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+        }
+
+        .topnav .dropdown-content a {
+            color: #2c3e50;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .topnav .dropdown-content a:hover {
+            background-color: #bdc3c7;
+        }
+
+        .topnav .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .menu-toggle {
+            font-size: 30px;
+            cursor: pointer;
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 14px 16px;
+            z-index: 1001;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #364866;
+            overflow-x: hidden;
+            transition: width 0.3s ease;
+            padding-top: 60px;
+        }
+
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #ecf0f1;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .sidenav a:hover {
+            color: #bdc3c7;
+        }
+
+        .content {
+            margin-top: 80px;
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            padding: 16px;
+        }
+
+        .headline {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700; /* Bold */
+            font-size: 2.5em; /* Adjust size as needed */
+        }
+
+        .intro {
+            text-align: center;
+            margin: 0 auto;
+            max-width: 800px;
+            color: #34495e;
+            font-family: 'noraml', cursive; /* Handwriting font */
+            font-size: 1.2em; /* Adjust size as needed */
+        }
+
+        .chart-container {
+            width: 50%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        .features {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #d5f4e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .features h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .feature-box {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            width: 100%;
+        }
+
+        .feature-item {
+            background-color: #deeaee;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin: 10px;
+            width: calc(33.333% - 20px);
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .feature-item h3 {
+            margin: 0;
+            color: #34495e;
+        }
+
+        .about-us {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #d6cbd3;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .reviews {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        @media screen and (max-width: 768px) {
+            .topnav a {
+                float: none;
+                display: block;
+                text-align: left;
+            }
+
+            .topnav .dropdown {
+                float: none;
+            }
+
+            .topnav .dropdown-content {
+                position: relative;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .chart-container {
+                width: 100%;
+                max-width: none;
+                padding: 10px;
+            }
+
+            .feature-item {
+                width: calc(50% - 20px);
+            }
+        }
+    </style>
+    <style>
+        /* All your existing styles here */
+        
+        /* Smooth scrolling effect */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <a href = "expenses-page.html"></a>
+    <div class="topnav">
+        <a href="#home">Home</a>
+        <div class="dropdown">
+            <button class="dropbtn">Expenses</button>
+            <div class="dropdown-content">
+                <a href="expenses-page.html">Rent</a>
+                <a href="expenses-page.html">Utilities</a>
+                <a href="expenses-page.html">Groceries</a>
+                <a href="expenses-page.html">Transport</a>
+            </div>
+            </div>
+        <div class="dropdown">
+            <button class="dropbtn">Savings</button>
+            <div class="dropdown-content">
+                <a href="savings-page.html">Personal Savings</a>
+                <a href="savings-page.html">Emergency Fund</a>
+                <a href="savings-page.html">Retirement</a>
+                <a href="savings-page.html">Education</a>
+                <a href = "savings-page.html"></a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Loans</button>
+            <div class="dropdown-content">
+                <a href="loans-page.html">Vehicle Loan</a>
+                <a href="loans-page.html">Home Loan</a>
+                <a href="loans-page.html">Student Loan</a>
+                <a href="loans-page.html">Personal Loan</a>
+                <a href ="loans-page.html"></a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="dropbtn">Budgeting</button>
+            <div class="dropdown-content">
+                <a href="budgeting-page.html">Monthly Budget</a>
+                <a href="budgeting-page.html">Annual Budget</a>
+                <a href="budgeting-page.html">Budget Planner</a>
+                <a href = "budgeting-page.html"></a>
+            </div>
+        </div>
+
+        <a href="#about-us" class = "about-us-btn">About Us</a>
+
+        <a href="#settings">Settings</a>
+        <span class="menu-toggle" onclick="toggleNav()">&#9776;</span>
+    </div>
+
+    <div id="sideNav" class="sidenav">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#login">Login</a>
+        <a href="#logout">Logout</a>
+    </div>
+
+    <div class="content">
+        <div>
+            <div class="headline">
+               <h1>Welcome to Expense Optimizer</h1>
+            </div>
+            <div class="intro">
+                <p>Expense Optimizer is your go-to solution for managing and tracking your finances effectively. Our platform helps you categorize and analyze your expenses, savings, loans, and budgeting plans to ensure you stay on top of your financial goals. Whether you're looking to save more, manage debt, or create a budget that works for you, Expense Optimizer provides the tools and insights you need to make informed financial decisions.</p>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Feature Box -->
+    <div class="features">
+        <h2>Features & Benefits</h2>
+        <div class="feature-box">
+            <div class="feature-item">
+                <h3>Track Expenses</h3>
+                <p>Efficiently track your daily, weekly, and monthly expenses.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Manage Savings</h3>
+                <p>Keep track of your savings goals and progress.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Analyze Spending</h3>
+                <p>Get detailed insights into your spending patterns.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Budgeting Tools</h3>
+                <p>Use our budgeting tools to create and manage your budget.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Investment Insights</h3>
+                <p>Receive guidance on making smart investment decisions.</p>
+            </div>
+        </div>
+    </div>
+     <a href ="#about-us" class = "about-us-btn">About Us</a>
+    <!-- About Us Section -->
+    <section id ="about-us" class = "about-us">
+        <h2>About Us</h2>
+        <div class ="about-us-content"></div>
+        <div class = "about-us-text"></div>      
+        <p>We are a team dedicated to helping individuals and families take control of their financial health. With a passion for financial literacy and technology, we strive to provide the best tools and insights for effective expense management and savings planning.</p>
+        <a href = "#about"></a>
+
+    <!-- Reviews Section -->
+    <div class="reviews">
+        <h2>Reviews</h2>
+        <p>We value your feedback and are constantly working to improve our services. Please let us know your thoughts and experiences with Expense Optimizer!</p>
+        <form>
+            <label for="review">Your Review:</label><br>
+            <textarea id="review" name="review" rows="4" cols="50" placeholder="Write your review here..."></textarea><br>
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+    <a href = "expenses-page.html"></a>
+    <a href = "savings-page.html"></a>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // JavaScript smooth scroll for all anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();  // Prevent the default action
+
+                const targetId = this.getAttribute('href').substring(1);  // Extract target id
+                const targetElement = document.getElementById(targetId); // Find the target element
+
+                // Scroll to the target element with smooth behavior
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'  // Align to the top of the viewport
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+</body>
+</html>
+        function toggleNav() {
+            var sidenav = document.getElementById("sideNav");
+            if (sidenav.style.width === "250px") {
+                sidenav.style.width = "0";
+            } else {
+                sidenav.style.width = "250px";
+            }
+        }
+
+        var ctx = document.getElementById('pieChart').getContext('2d');
+        var pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Rent', 'Utilities', 'Groceries', 'Transport'],
+                datasets: [{
+                    label: 'Monthly Savings',
+                    data: [30, 20, 25, 25], // Example data percentages
+                    backgroundColor: [
+                        '#ff6384',
+                        '#36a2eb',
+                        '#cc65fe',
+                        '#ffce56'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                animation: {
+                    duration: 1000,
+                    easing: 'easeOutBounce'
+                }
+            }
+        });
+    </script>
+</body>
+</html>

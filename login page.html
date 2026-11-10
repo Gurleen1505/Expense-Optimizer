@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Sign Up</title>
+    <style>
+        body {
+            background-image: url('background image.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: lavender;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #1e90ff, #1e90ff);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .form-group button:hover {
+            background: linear-gradient(135deg, #87cefa, #87cefa);
+        }
+        .signup-fields {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Expense Optimizer</h1>
+        <form id="userForm">
+            <!-- Login Fields -->
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <!-- Additional Sign-Up Fields -->
+            <div class="signup-fields">
+                <div class="form-group">
+                    <label for="firstname">First Name</label>
+                    <input type="text" id="firstname" name="firstname" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Last Name</label>
+                    <input type="text" id="lastname" name="lastname" required>
+                </div>
+                <div class="form-group">
+                    <label for="createPassword">Create Password</label>
+                    <input type="password" id="createPassword" name="createPassword" required>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-group">
+                <button type="button" id="loginButton">Login</button>
+            </div>
+            <div class="form-group">
+                <button type="button" id="signupButton">Sign Up</button>
+            </div>
+        </form>
+    </div>
+    <a href = "mainpage.html"></a>
+
+    <script>
+        let signUpClicked = false;
+
+        // Handle Sign-Up Button Click
+        document.getElementById('signupButton').addEventListener('click', function() {
+            const signupFields = document.querySelector('.signup-fields');
+
+            if (!signUpClicked) {
+                signupFields.style.display = 'block';
+                document.getElementById('loginButton').style.display = 'none';
+                this.textContent = 'Submit';
+                signUpClicked = true;
+            } else {
+                const username = document.getElementById('username').value;
+                const firstname = document.getElementById('firstname').value;
+                const lastname = document.getElementById('lastname').value;
+                const createPassword = document.getElementById('createPassword').value;
+
+                if (username && firstname && lastname && createPassword) {
+                    alert('Sign-up successful! Redirecting to homepage...');
+                    window.location.href = 'mainpage.html'; // Replace with your actual main page path or URL
+                } else {
+                    alert('Please fill in all fields.');
+                }
+            }
+        });
+
+        // Handle Login Button Click
+        document.getElementById('loginButton').addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username && password) {
+                alert('Login successful! Redirecting to homepage...');
+                window.location.href = 'mainpage.html'; // Replace with your actual main page path or URL
+            } else {
+                alert('Please fill in both fields.');
+            }
+        });
+    </script>
+</body>
+</html>

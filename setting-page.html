@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Expense Optimizer</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@700&display=swap">
+    <style>
+        /* Default Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .content {
+            width: 90%;
+            max-width: 800px;
+            padding: 16px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .headline {
+            text-align: center;
+            margin: 20px 0;
+            color: #2c3e50;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+
+        .settings-section {
+            background-color: #d5f4e6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            font-size: 1.5em;
+        }
+
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .setting-option:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #c94c4c;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
+
+        select, input[type="text"] {
+            padding: 8px;
+            width: 60%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #c94c4c;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #b23a3a;
+        }
+
+        /* Light Theme */
+        body.light {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .content.light {
+            background-color: #ffffff;
+            color: #333;
+        }
+
+        .settings-section.light {
+            background-color: #d5f4e6;
+        }
+
+        /* Dark Theme */
+        body.dark {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .content.dark {
+            background-color: #1e1e1e;
+            color: #ffffff;
+        }
+
+        .settings-section.dark {
+            background-color: #333;
+        }
+
+        /* Colorful Theme */
+        body.colorful {
+            background-color: #f0f8ff;
+            color: #4b0082;
+        }
+
+        .content.colorful {
+            background-color: #e6f7ff;
+            color: #4b0082;
+        }
+
+        .settings-section.colorful {
+            background-color: #ffb6c1;
+        }
+
+        @media (max-width: 600px) {
+            .setting-option {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            select, input[type="text"] {
+                width: 80%;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="light">
+    <div class="content">
+        <h1 class="headline">Settings</h1>
+
+        <!-- Privacy Settings Section -->
+        <div class="settings-section">
+            <h2>Privacy Settings</h2>
+            <div class="setting-option">
+                <span>Two-Factor Authentication</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="twoFactorAuth">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div id="twoFactorAuthQuestion" style="display:none;">
+                <p>Would you like to enable Two-Factor Authentication?</p>
+                <button onclick="enableTwoFactorAuth()">Enable</button>
+            </div>
+        </div>
+
+        <!-- Account Information Section -->
+        <div class="settings-section">
+            <h2>Account Information</h2>
+            <div class="setting-option">
+                <span>Change Password</span>
+                <button onclick="showChangePassword()">Change Password</button>
+            </div>
+            <div id="changePasswordForm" style="display:none;">
+                <label>Old Password:</label>
+                <input type="password" id="oldPassword">
+                <label>New Password:</label>
+                <input type="password" id="newPassword">
+                <button onclick="submitNewPassword()">Submit</button>
+            </div>
+        </div>
+
+        <!-- Budget Preferences Section -->
+        <div class="settings-section">
+            <h2>Budget Preferences</h2>
+            <div class="setting-option">
+                <span>Currency</span>
+                <select id="currencySelect">
+                    <option value="USD">USD - United States Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="INR">INR - Indian Rupee</option>
+                    <option value="GBP">GBP - British Pound</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                    <option value="CAD">CAD - Canadian Dollar</option>
+                    <option value="CHF">CHF - Swiss Franc</option>
+                    <option value="CNY">CNY - Chinese Yuan</option>
+                    <option value="MXN">MXN - Mexican Peso</option>
+                    <option value="BRL">BRL - Brazilian Real</option>
+                    <option value="RUB">RUB - Russian Ruble</option>
+                    <option value="ZAR">ZAR - South African Rand</option>
+                    <option value="SEK">SEK - Swedish Krona</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Website Theme Section -->
+        <div class="settings-section">
+            <h2>Website Theme</h2>
+            <label for="themeSelect">Choose a theme:</label>
+            <select id="themeSelect" onchange="changeTheme(this)">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="colorful">Colorful</option>
+            </select>
+        </div>
+
+        <!-- Additional Preferences -->
+        <div class="settings-section">
+            <h2>Additional Preferences</h2>
+            <div class="setting-option">
+                <span>Language Preferences</span>
+                <select id="languageSelect">
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
+                    <option value="it">Italian</option>
+                    <option value="pt">Portuguese</option>
+                    <option value="hi">Hindi</option> <!-- Added Hindi -->
+                </select>
+            </div>
+            <div class="setting-option">
+                <span>Go Back</span>
+                <button onclick="goBack()">Go Back</button>
+            </div>
+            <div class="setting-option">
+                <span>Logout</span>
+                <button onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = "http://127.0.0.1:5500/mainpage.html"; // Replace with actual page URL
+        }
+
+        function logout() {
+            window.location.href = "http://127.0.0.1:5500/login%20page.html"; // Replace with actual login page URL
+        }
+
+        function enableTwoFactorAuth() {
+            alert("Two-Factor Authentication enabled!");
+            document.getElementById("twoFactorAuthQuestion").style.display = 'none';
+        }
+
+        function showChangePassword() {
+            document.getElementById("changePasswordForm").style.display = 'block';
+        }
+
+        function submitNewPassword() {
+            var oldPassword = document.getElementById("oldPassword").value;
+            var newPassword = document.getElementById("newPassword").value;
+            // Handle password change logic here
+            alert("Password changed!");
+            document.getElementById("changePasswordForm").style.display = 'none';
+        }
+
+        function changeTheme(select) {
+            document.body.className = select.value;
+            document.querySelector('.content').className = 'content ' + select.value;
+            document.querySelectorAll('.settings-section').forEach(function(section) {
+                section.className = 'settings-section ' + select.value;
+            });
+        }
+    </script>
+</body>
+</html>

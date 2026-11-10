@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Savings</title>
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #e9ecef; /* Light background color */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin-top: 80px;
+        }
+        .headline {
+            text-align: center;
+            margin-top: 20px;
+            color: #2c3e50;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            font-size: 2.5em;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            background-color: #f8f9fa; /* Light gray background */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .form-container > div {
+            width: 48%;
+        }
+        .form-container h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .form-container label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .form-container input, .form-container select, .form-container textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-container textarea {
+            resize: vertical;
+        }
+        .form-container input[type="submit"] {
+            background-color: #c94c4c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+        }
+        .form-container input[type="submit"]:hover {
+            background-color: #a83939;
+        }
+        .table-container, .chart-container {
+            background-color: #f8f9fa; /* Light gray background */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .table-container h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #summary {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="headline">
+            <h1>Personal Savings</h1>
+        </div>
+        
+        <div class="form-container">
+            <div>
+                <h2>Enter Your Savings Details</h2>
+                <form id="savingsForm">
+                    <label for="totalSalary">Total Salary:</label>
+                    <input type="text" id="totalSalary" name="totalSalary" placeholder="Enter total salary" oninput="formatCurrencyInput(this)">
+                    
+                    <label for="amount">Amount Invested:</label>
+                    <input type="text" id="amount" name="amount" placeholder="Enter amount" oninput="formatCurrencyInput(this)">
+                    
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date">
+                    
+                    <label for="notes">Notes:</label>
+                    <textarea id="notes" name="notes" rows="4" placeholder="Additional notes (optional)"></textarea>
+                    
+                    <label for="category">Category:</label>
+                    <select id="category" name="category">
+                        <option value="Emergency Fund">Emergency Fund</option>
+                        <option value="Retirement">Retirement</option>
+                        <option value="Education">Education</option>
+                        <option value="Vacation">Vacation</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+
+            <div class="chart-container">
+                <h2>Savings Overview</h2>
+                <canvas id="barChart"></canvas>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <h2>Savings Details</h2>
+            <table id="savingsTable">
+                <thead>
+                    <tr>
+                        <th>Amount Invested</th>
+                        <th>Date</th>
+                        <th>Notes</th>
+                        <th>Category</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+            <div id="summary">
+                <p>Total Salary: <span id="totalSalaryDisplay">₹0</span></p>
+                <p>Total Invested: <span id="totalInvested">₹0</span></p>
+                <p>Remaining Balance: <span id="remainingBalance">₹0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Function to format numbers with commas and add the rupee symbol
+        function formatCurrency(amount) {
+            return '₹' + amount.toLocaleString('en-IN');
+        }
+
+        // Function to format number with commas
+        function formatNumberWithCommas(number) {
+            return number.toLocaleString('en-IN');
+        }
+
+        // Function to format input field with commas
+        function formatCurrencyInput(input) {
+            let value = parseFloat(input.value.replace(/,/g, '')) || 0;
+            input.value = formatNumberWithCommas(value);
+        }
+
+        // Load saved data from localStorage
+        function loadSavedData() {
+            var savedData = JSON.parse(localStorage.getItem('savingsData')) || [];
+            var totalSalary = 0;
+            var totalInvested = 0;
+            var labels = [];
+            var data = [];
+
+            savedData.forEach(item => {
+                if (item.totalSalary) {
+                    totalSalary = item.totalSalary;
+                }
+
+                if (item.amount) {
+                    totalInvested += item.amount;
+
+                    var tableBody = document.querySelector('#savingsTable tbody');
+                    var newRow = tableBody.insertRow();
+                    newRow.insertCell().textContent = formatCurrency(item.amount);
+                    newRow.insertCell().textContent = item.date;
+                    newRow.insertCell().textContent = item.notes;
+                    newRow.insertCell().textContent = item.category;
+
+                    // Update chart data
+                    if (labels.includes(item.category)) {
+                        var index = labels.indexOf(item.category);
+                        data[index] += item.amount;
+                    } else {
+                        labels.push(item.category);
+                        data.push(item.amount);
+                    }
+                }
+            });
+
+            document.getElementById('totalSalaryDisplay').textContent = formatCurrency(totalSalary);
+            document.getElementById('totalInvested').textContent = formatCurrency(totalInvested);
+            document.getElementById('remainingBalance').textContent = formatCurrency(totalSalary - totalInvested);
+
+            barChart.data.labels = labels;
+            barChart.data.datasets[0].data = data;
+            barChart.update();
+        }
+
+        var ctx = document.getElementById('barChart').getContext('2d');
+
+        var barChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [], // Initially empty
+                datasets: [{
+                    label: 'Amount Invested',
+                    data: [], // Initially empty
+                    backgroundColor: [
+                        '#ff6384',
+                        '#36a2eb',
+                        '#cc65fe',
+                        '#ffce56',
+                        '#4bc0c0'
+                    ],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        document.getElementById('savingsForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var totalSalary = parseFloat(document.getElementById('totalSalary').value.replace(/,/g, ''));
+            var amount = parseFloat(document.getElementById('amount').value.replace(/,/g, ''));
+            var date = document.getElementById('date').value;
+            var notes = document.getElementById('notes').value;
+            var category = document.getElementById('category').value;
+
+            if (!isNaN(totalSalary) && !isNaN(amount) && category) {
+                var totalInvested = parseFloat(document.getElementById('totalInvested').textContent.replace('₹', '').replace(/,/g, '')) || 0;
+                totalInvested += amount;
+
+                document.getElementById('totalInvested').textContent = formatCurrency(totalInvested);
+                document.getElementById('remainingBalance').textContent = formatCurrency(totalSalary - totalInvested);
+
+                // Update table
+                var tableBody = document.querySelector('#savingsTable tbody');
+                var newRow = tableBody.insertRow();
+                newRow.insertCell().textContent = formatCurrency(amount);
+                newRow.insertCell().textContent = date;
+                newRow.insertCell().textContent = notes;
+                newRow.insertCell().textContent = category;
+
+                // Update chart data
+                var labels = barChart.data.labels;
+                var data = barChart.data.datasets[0].data;
+
+                if (labels.includes(category)) {
+                    var index = labels.indexOf(category);
+                    data[index] += amount;
+                } else {
+                    labels.push(category);
+                    data.push(amount);
+                }
+                barChart.update();
+
+                // Save to localStorage
+                var savedData = JSON.parse(localStorage.getItem('savingsData')) || [];
+                savedData.push({ totalSalary, amount, date, notes, category });
+                localStorage.setItem('savingsData', JSON.stringify(savedData));
+
+                // Reset form
+                document.getElementById('savingsForm').reset();
+            }
+        });
+
+        // Load saved data on page load
+        window.onload = loadSavedData;
+    </script>
+</body>
+</html> 
